@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System.Collections.Specialized;
 using System.Collections;
+using System.Collections.Generic;
 
 namespace Common.Utility.Extensions.Tests
 {
@@ -193,6 +194,55 @@ namespace Common.Utility.Extensions.Tests
 
             // assert
             Assert.AreEqual(2, ht["a"]);
+        }
+
+        [TestMethod]
+        public void ShouldCopyToTarget()
+        {
+            var dictionary = new Dictionary<int, string>();
+            dictionary.Add(1, "2");
+            dictionary.Add(2, "3");
+
+            var dictionary2 = new Dictionary<int, string>();
+            dictionary.CopyTo(dictionary2);
+
+            foreach (var kvp in dictionary)
+            {
+                Assert.AreEqual(kvp.Value, dictionary2[kvp.Key]);
+            }
+        }
+
+        [TestMethod]
+        public void ShouldDeepCopyToTarget()
+        {
+            var dictionary = new Dictionary<int, RefType>();
+            dictionary.Add(1, new RefType { Text = "a" });
+            dictionary.Add(2, new RefType { Text = "b" });
+
+            var dictionary2 = new Dictionary<int, RefType>();
+            dictionary.CopyTo(dictionary2, x => new RefType { Text = x.Text });
+
+            foreach (var kvp in dictionary)
+            {
+                Assert.AreEqual(kvp.Value, dictionary2[kvp.Key]);
+                Assert.IsFalse(object.ReferenceEquals(kvp.Value, dictionary2[kvp.Key]));
+            }
+        }
+
+        private class RefType
+        {
+            public string Text;
+
+            public override bool Equals(object obj)
+            {
+                var that = obj as RefType;
+                return this.Text == that.Text;
+            }
+
+            public override int GetHashCode()
+            {
+                return base.GetHashCode();
+            }
         }
     }
 }

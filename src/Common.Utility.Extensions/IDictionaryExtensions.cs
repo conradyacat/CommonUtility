@@ -1,4 +1,6 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Common.Utility.Extensions
@@ -86,6 +88,37 @@ namespace Common.Utility.Extensions
             else
             {
                 self.Add(key, value);
+            }
+        }
+
+        /// <summary>
+        /// Creates a shalow copy of the dictionary
+        /// </summary>
+        /// <typeparam name="K"></typeparam>
+        /// <typeparam name="V"></typeparam>
+        /// <param name="self"></param>
+        /// <param name="target"></param>
+        public static void CopyTo<K, V>(this IDictionary<K, V> self, IDictionary<K, V> target)
+        {
+            foreach (var kvp in self)
+            {
+                target.Add(kvp.Key, kvp.Value);
+            }
+        }
+
+        /// <summary>
+        /// Create a shallow or deep-copy of the dictionary. Provide the copyFunc to enable deep-copy.
+        /// </summary>
+        /// <typeparam name="K"></typeparam>
+        /// <typeparam name="V"></typeparam>
+        /// <param name="self"></param>
+        /// <param name="target"></param>
+        /// <param name="copyFunc"></param>
+        public static void CopyTo<K, V>(this IDictionary<K, V> self, IDictionary<K, V> target, Func<V, V> copyFunc)
+        {
+            foreach (var kvp in self)
+            {
+                target.Add(kvp.Key, copyFunc(kvp.Value));
             }
         }
     }
