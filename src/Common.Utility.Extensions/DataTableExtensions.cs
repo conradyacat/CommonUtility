@@ -9,7 +9,11 @@ namespace Common.Utility.Extensions
     {
         public static IEnumerable<DataRow> SelectAsEnumerable(this DataTable self, Predicate<DataRow> predicate)
         {
-            return self.Rows.Cast<DataRow>().Where(row => predicate(row));
+            foreach (DataRow row in self.Rows)
+            {
+                if (predicate(row))
+                    yield return row;
+            }
         }
 
         public static DataRow[] Select(this DataTable self, Predicate<DataRow> predicate)
