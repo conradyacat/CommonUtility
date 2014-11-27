@@ -4,4 +4,5 @@
 **/obj/**
 **/bin/**
 **/packages/**
+!**/packages/repositories.config
 **/TestResult/**
